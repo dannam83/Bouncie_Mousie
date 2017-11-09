@@ -2,17 +2,103 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <style media="screen">
-      canvas {
-        border: 2px solid blue;
-      }
-    </style>
-    <script type="text/javascript">
+    <title>Mouse Bounce</title>
 
-    </script>
-    <canvas id="canvas" width="300" height="300"></canvas>
-  </body>
+    <style media="screen">
+    canvas {
+      border: 2px solid blue;
+    }
+    .gameboard-div {
+      display: flex;
+      justify-content: center;
+    }
+    </style>
+   </head>
+
+   <body onload="draw();" onload="ball.draw()">
+     <div class="gameboard-div">
+       <canvas id="canvas" width="400" height="500"></canvas>
+     </div>
+
+     <script type="text/javascript">
+
+       function draw() {
+
+         var canvas = document.getElementById('canvas');
+         var ctx = canvas.getContext('2d');
+         var raf;
+         var gravity = 0.25;
+        //  var bounce_factor = 0.8;
+         var ball = {
+           x: 200,
+           y: 460,
+           vx: 1,
+           vy: 14,
+           radius: 15,
+           color: 'red',
+           draw: function() {
+             ctx.beginPath();
+             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+             ctx.closePath();
+             ctx.fillStyle = this.color;
+             ctx.fill();
+           }
+         }
+
+         function draw() {
+           ctx.clearRect(0,0, canvas.width, canvas.height);
+           ball.draw();
+           ball.vy += gravity;
+           ball.x += ball.vx;
+           ball.y += ball.vy;
+          //  ball.vy *= 1.0;
+           ball.vy += 0.25;
+           if (ball.y + ball.vy > canvas.height || ball.y + ball.vy < 0) {
+             ball.vy = -ball.vy;
+           }
+           if (ball.x + ball.vx > canvas.width + 17) {
+             ball.x = -17;
+           } else if (ball.x + ball.vx < -17) {
+             ball.x = canvas.width + 17;
+           }
+
+
+           raf = window.requestAnimationFrame(draw);
+         }
+
+         raf = window.requestAnimationFrame(draw);
+
+        //  canvas.addEventListener('mouseover', function(e) {
+        //  });
+
+        //  canvas.addEventListener('mouseout', function(e) {
+        //    window.cancelAnimationFrame(raf);
+        //  });
+
+         ball.draw();
+       }
+
+       // switch (expr) {
+       //   case 'Oranges':
+       //     console.log('Oranges are $0.59 a pound.');
+       //     break;
+       //   case 'Apples':
+       //     console.log('Apples are $0.32 a pound.');
+       //     break;
+       //   case 'Bananas':
+       //     console.log('Bananas are $0.48 a pound.');
+       //     break;
+       //   case 'Cherries':
+       //     console.log('Cherries are $3.00 a pound.');
+       //     break;
+       //   case 'Mangoes':
+       //   case 'Papayas':
+       //     console.log('Mangoes and papayas are $2.79 a pound.');
+       //     break;
+       //   default:
+       //     console.log('Sorry, we are out of ' + expr + '.');
+       // }
+     </script>
+
+   </body>
 </html>
