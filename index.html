@@ -15,20 +15,21 @@
     </style>
    </head>
 
-   <body onload="draw();" onload="ball.draw()">
+   <body onload="drawBall()" >
+
+
      <div class="gameboard-div">
        <canvas id="canvas" width="400" height="500"></canvas>
+
      </div>
 
-     <script type="text/javascript">
+     <script type="text/javascript" >
 
-       function draw() {
-
+       function drawBall() {
          var canvas = document.getElementById('canvas');
          var ctx = canvas.getContext('2d');
          var raf;
          var gravity = 0.25;
-        //  var bounce_factor = 0.8;
          var ball = {
            x: 200,
            y: 460,
@@ -44,13 +45,12 @@
              ctx.fill();
            }
          }
-
-         function draw() {
+         function redrawBall() {
            ctx.clearRect(0,0, canvas.width, canvas.height);
-           ball.draw();
            ball.vy += gravity;
            ball.x += ball.vx;
            ball.y += ball.vy;
+           ball.draw();
           //  ball.vy *= 1.0;
            ball.vy += 0.25;
            if (ball.y + ball.vy > canvas.height || ball.y + ball.vy < 0) {
@@ -61,12 +61,9 @@
            } else if (ball.x + ball.vx < -17) {
              ball.x = canvas.width + 17;
            }
-
-
-           raf = window.requestAnimationFrame(draw);
+           raf = window.requestAnimationFrame(redrawBall);
          }
-
-         raf = window.requestAnimationFrame(draw);
+         raf = window.requestAnimationFrame(redrawBall);
 
         //  canvas.addEventListener('mouseover', function(e) {
         //  });
@@ -75,8 +72,29 @@
         //    window.cancelAnimationFrame(raf);
         //  });
 
-         ball.draw();
+        //  ball.draw();
        }
+
+        function moveBall() {
+          console.log("hi");
+          // const keyName = event.key;
+          // alert('keydown event\n\n' + 'key: ' + keyName);
+
+          // switch (e.targetValue) {
+          // case 'Oranges':
+          //   console.log('Oranges are $0.59 a pound.');
+          //   break;
+          // case 'Apples':
+          //   console.log('Apples are $0.32 a pound.');
+          //   break;
+          // default:
+          //   console.log('Sorry, we are out of ' + expr + '.');
+          // }
+        }
+
+        window.addEventListener("click", moveBall);
+
+
 
        // switch (expr) {
        //   case 'Oranges':
