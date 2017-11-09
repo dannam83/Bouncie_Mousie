@@ -15,8 +15,7 @@
     </style>
    </head>
 
-   <body onload="drawBall()" >
-
+   <body onload="drawBall()">
 
      <div class="gameboard-div">
        <canvas id="canvas" width="400" height="500"></canvas>
@@ -33,7 +32,7 @@
          var ball = {
            x: 200,
            y: 460,
-           vx: 1,
+           vx: 0,
            vy: 14,
            radius: 15,
            color: 'red',
@@ -51,18 +50,28 @@
            ball.x += ball.vx;
            ball.y += ball.vy;
            ball.draw();
-          //  ball.vy *= 1.0;
            ball.vy += 0.25;
            if (ball.y + ball.vy > canvas.height || ball.y + ball.vy < 0) {
              ball.vy = -ball.vy;
            }
+
            if (ball.x + ball.vx > canvas.width + 17) {
              ball.x = -17;
            } else if (ball.x + ball.vx < -17) {
              ball.x = canvas.width + 17;
            }
+
+           if (ball.vx < -0.2) {
+             ball.vx += 0.2;
+           } else if (ball.vx > 0.2) {
+             ball.vx -= 0.2;
+           } else {
+             ball.vx = 0;
+           }
+
            raf = window.requestAnimationFrame(redrawBall);
          }
+
          raf = window.requestAnimationFrame(redrawBall);
 
         //  canvas.addEventListener('mouseover', function(e) {
@@ -72,50 +81,23 @@
         //    window.cancelAnimationFrame(raf);
         //  });
 
-        //  ball.draw();
-       }
+        window.addEventListener("keydown", moveBall, true);
 
-        function moveBall() {
-          console.log("hi");
-          // const keyName = event.key;
-          // alert('keydown event\n\n' + 'key: ' + keyName);
-
-          // switch (e.targetValue) {
-          // case 'Oranges':
-          //   console.log('Oranges are $0.59 a pound.');
-          //   break;
-          // case 'Apples':
-          //   console.log('Apples are $0.32 a pound.');
-          //   break;
-          // default:
-          //   console.log('Sorry, we are out of ' + expr + '.');
-          // }
+        function moveBall(e) {
+          switch (e.keyCode) {
+            case (37):
+              ball.vx -= 4;
+              break;
+            case (39):
+              ball.vx += 4;
+              break;
+            default:
+              null;
+          }
         }
+        ctx.fillRect(150, 400, 100, 100);
+      }
 
-        window.addEventListener("click", moveBall);
-
-
-
-       // switch (expr) {
-       //   case 'Oranges':
-       //     console.log('Oranges are $0.59 a pound.');
-       //     break;
-       //   case 'Apples':
-       //     console.log('Apples are $0.32 a pound.');
-       //     break;
-       //   case 'Bananas':
-       //     console.log('Bananas are $0.48 a pound.');
-       //     break;
-       //   case 'Cherries':
-       //     console.log('Cherries are $3.00 a pound.');
-       //     break;
-       //   case 'Mangoes':
-       //   case 'Papayas':
-       //     console.log('Mangoes and papayas are $2.79 a pound.');
-       //     break;
-       //   default:
-       //     console.log('Sorry, we are out of ' + expr + '.');
-       // }
      </script>
 
    </body>
