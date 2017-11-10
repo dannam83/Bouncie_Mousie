@@ -1,5 +1,6 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+
 const beginningBoards = [
   [2120, Math.random()],
   [2000, Math.random()],
@@ -31,43 +32,40 @@ const beginningBoards = [
   [80, 0.5],
 ];
 
+const walleFloat = new Image();
+  walleFloat.src = './images/walle_float.png';
+const eves = new Image();
+  eves.src = './images/eves.png';
+const board = new Image();
+  board.src = './images/board.png';
+const bounceBall = new Image();
+  bounceBall.src = './images/ball.png';
+const cloud1 = new Image();
+  cloud1.src = './images/cloud1.png';
+const cloud2 = new Image();
+  cloud2.src = './images/cloud2.png';
+const cloud3 = new Image();
+  cloud3.src = './images/cloud3.png';
+const cloud4 = new Image();
+  cloud4.src = './images/cloud4.png';
+const cloud5 = new Image();
+  cloud5.src = './images/cloud5.png';
+const cloudImages = [cloud1, cloud2, cloud3, cloud4, cloud5];
 const cloudsArray = [];
 for (let i = 0; i < 20; i++) {
-  cloudsArray.push([Math.random(), Math.random()]);
+  cloudsArray.push([
+    Math.random() * 2000 + 200,
+    Math.random(),
+    cloudImages[Math.floor(Math.random() * 5)]
+  ]);
 }
-
-// *** TO ALSO RANDOMIZE Y COORD OF BOARD
-// const defaultBoard = [
-//   [80, 0.5],
-//   [500, Math.random()],
-//   [580, Math.random()],
-// ];
-// const beginningBoards = [];
-// for (let i = 0; i < 7; i++) {
-//   boardCoord = [Math.random() * 420 + 80, Math.random()];
-//   beginningBoards.push(boardCoord);
-// }
 
 // THE INVOKED FUNCTION ***
-drawAll();
+draw();
 // ************************
 
-function drawAll() {
-  draw(beginningBoards);
-}
-
-function draw(beginningBoards) {
+function draw() {
   let raf;
-  const walleFloat = new Image();
-    walleFloat.src = './images/walle_float.png';
-  const eves = new Image();
-    eves.src = './images/eves.png';
-  const board = new Image();
-    board.src = './images/board.png';
-  const bounceBall = new Image();
-    bounceBall.src = './images/ball.png';
-  const cloud = new Image();
-    cloud.src = './images/cloud1.png';
   const gravity = 0.14;
   const ball = {
     x: 200,
@@ -119,51 +117,22 @@ function draw(beginningBoards) {
 
     raf = window.requestAnimationFrame(redraw);
 
-
     const boardHeight = 1;
     const boardWidth = 50;
     const ystart = canvas.height - boardHeight;
-    // const xstart = 0;
-
-    // function drawBoard(y, x) {
-    //   this.ypos = ystart - y;
-    //   this.xpos = xstart + x;
-    //   ctx.beginPath();
-    //   ctx.rect(this.xpos, this.ypos, boardWidth, boardHeight);
-    //   ctx.fillStyle = "#0095DD";
-    //   ctx.fill();
-    //   ctx.closePath();
-    //   if (ball.y > this.ypos - 15 && (ball.vy > 0)) {
-    //     if(ball.x > this.xpos - 4 && ball.x < this.xpos +
-    //       boardWidth + 4) {
-    //         if (ball.y < this.ypos) {
-    //           ball.vy = -12;
-    //       }
-    //     }
-    //   }
-    // }
 
     const xposMax = canvas.width - boardWidth;
 
-    function Cloud(y, x) {
+    function Cloud(y, x, cloudType) {
       this.ypos = ystart - y;
       this.xpos = x;
-      ctx.drawImage(cloud, this.xpos, this.ypos);
+      let cloud = cloudType;
+      ctx.drawImage(cloudType, this.xpos, this.ypos);
     }
-
-
-    cloudsArray.map(cloudCoord => {
-      return new Cloud(2000 * cloudCoord[0] + 200, xposMax * cloudCoord[1]);
-    });
 
     function Board(y, x) {
       this.ypos = ystart - y;
       this.xpos = x;
-      // ctx.beginPath();
-      // ctx.rect(this.xpos, this.ypos, boardWidth, boardHeight);
-      // ctx.fillStyle = "#0095DD";
-      // ctx.fill();
-      // ctx.closePath();
       ctx.drawImage(board, this.xpos, this.ypos);
       ctx.drawImage(eves, this.xpos + 0.5, this.ypos + 6);
       if (ball.y > this.ypos - 15 && (ball.vy > 0)) {
@@ -177,6 +146,9 @@ function draw(beginningBoards) {
       }
     }
 
+    cloudsArray.map(cloud => {
+      return new Cloud(cloud[0], xposMax * cloud[1], cloud[2]);
+    });
 
     beginningBoards.map(coord => {
       return new Board(coord[0], xposMax * coord[1]);
@@ -189,9 +161,12 @@ function draw(beginningBoards) {
     if (ball.y < 200) {
       beginningBoards.forEach(board => {
         board[0] += ball.vy;
-        if (board[0] < -20) {
+        if (board[0] < -50) {
           beginningBoards.pop();
         }
+      });
+      cloudsArray.forEach(cloud => {
+        cloud[0] += ball.vy;
       });
       ball.y -= ball.vy;
     }
