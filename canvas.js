@@ -1,15 +1,47 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const beginningBoards = [
-  [80, 0.5],
-  [150, Math.random()],
-  [250, Math.random()],
-  [300, Math.random()],
-  [370, Math.random()],
-  [415, Math.random()],
-  [500, Math.random()],
+  [2120, Math.random()],
+  [2000, Math.random()],
+  [1880, Math.random()],
+  [1750, Math.random()],
+  [1630, Math.random()],
+  [1540, Math.random()],
+  [1440, Math.random()],
+  [1320, Math.random()],
+  [1200, Math.random()],
+  [1150, Math.random()],
+  [1080, Math.random()],
+  [1000, Math.random()],
+  [920, Math.random()],
+  [880, Math.random()],
+  [850, Math.random()],
+  [800, Math.random()],
+  [720, Math.random()],
+  [650, Math.random()],
+  [600, Math.random()],
   [580, Math.random()],
+  [550, Math.random()],
+  [500, Math.random()],
+  [415, Math.random()],
+  [370, Math.random()],
+  [300, Math.random()],
+  [250, Math.random()],
+  [150, Math.random()],
+  [80, 0.5],
 ];
+
+// *** TO ALSO RANDOMIZE Y COORD OF BOARD
+// const defaultBoard = [
+//   [80, 0.5],
+//   [500, Math.random()],
+//   [580, Math.random()],
+// ];
+// const beginningBoards = [];
+// for (let i = 0; i < 7; i++) {
+//   boardCoord = [Math.random() * 420 + 80, Math.random()];
+//   beginningBoards.push(boardCoord);
+// }
 
 // THE INVOKED FUNCTION ***
 drawAll();
@@ -28,6 +60,7 @@ function draw(beginningBoards) {
     vx: 0,
     vy: 12,
     radius: 15,
+    gameOff: true,
     color: 'red',
     draw: function() {
       ctx.beginPath();
@@ -47,8 +80,10 @@ function draw(beginningBoards) {
     ball.move = true;
 
    // ball bounces off bottom of canvas
-    if (ball.y + ball.vy > canvas.height || ball.y + ball.vy < 0) {
-      ball.vy = -ball.vy;
+    if (ball.gameOff) {
+      if (ball.y + ball.vy > canvas.height) {
+        ball.vy = -ball.vy;
+      }
     }
 
     // ball wraps around to other side
@@ -70,7 +105,7 @@ function draw(beginningBoards) {
     raf = window.requestAnimationFrame(redraw);
 
     const boardHeight = 10;
-    const boardWidth = 95;
+    const boardWidth = 98;
     const ystart = canvas.height - boardHeight;
     const xstart = 0;
 
@@ -86,17 +121,55 @@ function draw(beginningBoards) {
         if(ball.x > this.xpos - 4 && ball.x < this.xpos +
           boardWidth + 4) {
             if (ball.y < this.ypos) {
-              ball.vy = -ball.vy ;
+              ball.vy = -12;
+          }
+        }
+      }
+    }
+
+    function Board(y, x) {
+      this.ypos = ystart - y;
+      this.xpos = xstart + x;
+      ctx.beginPath();
+      ctx.rect(this.xpos, this.ypos, boardWidth, boardHeight);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+      if (ball.y > this.ypos - 15 && (ball.vy > 0)) {
+        if(ball.x > this.xpos - 4 && ball.x < this.xpos +
+          boardWidth + 4) {
+            if (ball.y < this.ypos) {
+              ball.vy = -12;
+              ball.gameOff = false;
           }
         }
       }
     }
 
     const xposMax = canvas.width - boardWidth;
-    beginningBoards.forEach(coord => {
-      drawBoard(coord[0], xposMax * coord[1]);
+    beginningBoards.map(coord => {
+      return new Board(coord[0], xposMax * coord[1]);
     });
+    if (ball.y < 200) {
+      beginningBoards.forEach(board => {
+        board[0] += ball.vy;
+        if (board[0] < 0) {
+          beginningBoards.pop();
+        }
+      });
+      ball.y -= ball.vy;
+    }
+
+    if (ball.y > canvas.height + 40) {
+      endGame();
+    }
+
+    function endGame() {
+      window.cancelAnimationFrame(raf);
+      alert("GAME OVER");
+    }
   }
+  // REDRAW ENDS HERE
 
   raf = window.requestAnimationFrame(redraw);
 
@@ -128,7 +201,7 @@ function draw(beginningBoards) {
       window.cancelAnimationFrame(raf);
     } else if (ball.move === false) {
       ball.move = true;
-      window.requestAnimationFrame(redraw);
+      raf = window.requestAnimationFrame(redraw);
     }
    });
 }
