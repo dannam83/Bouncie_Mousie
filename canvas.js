@@ -110,7 +110,14 @@ function draw(beginningBoards) {
       case (39):
         ball.vx += 4;
         break;
-
+      case (32):
+        if (ball.move) {
+          ball.move = false;
+          window.cancelAnimationFrame(raf);
+        } else if (ball.move === false) {
+          ball.move = true;
+          window.requestAnimationFrame(redraw);
+        } break;
       default:
         return null;
     }
