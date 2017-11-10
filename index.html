@@ -15,7 +15,7 @@
     </style>
   </head>
 
-  <body onload="draw()">
+  <body onload="drawAll()">
 
     <div class="gameboard-div">
       <canvas id="canvas" width="400" height="500"></canvas>
@@ -23,9 +23,28 @@
 
     <script type="text/javascript" >
 
-      function draw() {
-        var canvas = document.getElementById('canvas');
-        var ctx = canvas.getContext('2d');
+      var canvas = document.getElementById('canvas');
+      var ctx = canvas.getContext('2d');
+      var beginningBoards = [
+        [80, 0.5],
+        [150, Math.random()],
+        [250, Math.random()],
+        [300, Math.random()],
+        [370, Math.random()],
+        [415, Math.random()],
+        [500, Math.random()],
+        [580, Math.random()],
+      ]
+
+      function drawAll() {
+        draw(beginningBoards);
+      }
+
+
+
+      function draw(beginningBoards) {
+        // var canvas = document.getElementById('canvas');
+        // var ctx = canvas.getContext('2d');
         var raf;
         var gravity = 0.14;
         var ball = {
@@ -81,24 +100,9 @@
           var boardHeight = 10;
           var boardWidth = 95;
           var ystart = canvas.height - boardHeight;
-          var xstart = (canvas.width-boardWidth)/2;
-          function drawBoard() {
-            this.ypos = ystart - 80;
-            this.xpos = xstart;
-            ctx.beginPath();
-            ctx.rect(this.xpos, this.ypos, boardWidth, boardHeight);
-            ctx.fillStyle = "#0095DD";
-            ctx.fill();
-            ctx.closePath();
-            if (ball.y > this.ypos - 15 && (ball.vy > 0)) {
-              if (ball.x > this.xpos && ball.x < this.xpos + boardWidth) {
-                if (ball.y < this.ypos) {
-                  ball.vy = -ball.vy ;
-                }
-              }
-            }
-          }
-          function drawBoard2(x, y) {
+          var xstart = 0;
+
+          function drawBoard(y, x) {
             this.ypos = ystart - y;
             this.xpos = xstart + x;
             ctx.beginPath();
@@ -107,8 +111,8 @@
             ctx.fill();
             ctx.closePath();
             if (ball.y > this.ypos - 15 && (ball.vy > 0)) {
-              if(ball.x > this.xpos && ball.x < this.xpos +
-                boardWidth) {
+              if(ball.x > this.xpos - 4 && ball.x < this.xpos +
+                boardWidth + 4) {
                   if (ball.y < this.ypos) {
                     ball.vy = -ball.vy ;
                 }
@@ -116,14 +120,15 @@
             }
           }
 
-          drawBoard();
-          drawBoard2(100, 150);
-          drawBoard2(10, 250);
+          const xposMax = canvas.width - boardWidth;
+          beginningBoards.forEach(coord => {
+            drawBoard(coord[0], xposMax * coord[1])
+          })
         }
 
         raf = window.requestAnimationFrame(redraw);
 
-        window.addEventListener("keydown", moveBall, true);
+        window.addEventListener("keydown", moveBall);
 
         function moveBall(e) {
           switch (e.keyCode) {
