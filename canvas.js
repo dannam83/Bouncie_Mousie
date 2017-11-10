@@ -31,6 +31,11 @@ const beginningBoards = [
   [80, 0.5],
 ];
 
+const cloudsArray = [];
+for (let i = 0; i < 20; i++) {
+  cloudsArray.push([Math.random(), Math.random()]);
+}
+
 // *** TO ALSO RANDOMIZE Y COORD OF BOARD
 // const defaultBoard = [
 //   [80, 0.5],
@@ -53,6 +58,16 @@ function drawAll() {
 
 function draw(beginningBoards) {
   let raf;
+  const walleFloat = new Image();
+    walleFloat.src = './images/walle_float.png';
+  const eves = new Image();
+    eves.src = './images/eves.png';
+  const board = new Image();
+    board.src = './images/board.png';
+  const bounceBall = new Image();
+    bounceBall.src = './images/ball.png';
+  const cloud = new Image();
+    cloud.src = './images/cloud1.png';
   const gravity = 0.14;
   const ball = {
     x: 200,
@@ -104,37 +119,53 @@ function draw(beginningBoards) {
 
     raf = window.requestAnimationFrame(redraw);
 
-    const boardHeight = 10;
-    const boardWidth = 98;
-    const ystart = canvas.height - boardHeight;
-    const xstart = 0;
 
-    function drawBoard(y, x) {
+    const boardHeight = 1;
+    const boardWidth = 50;
+    const ystart = canvas.height - boardHeight;
+    // const xstart = 0;
+
+    // function drawBoard(y, x) {
+    //   this.ypos = ystart - y;
+    //   this.xpos = xstart + x;
+    //   ctx.beginPath();
+    //   ctx.rect(this.xpos, this.ypos, boardWidth, boardHeight);
+    //   ctx.fillStyle = "#0095DD";
+    //   ctx.fill();
+    //   ctx.closePath();
+    //   if (ball.y > this.ypos - 15 && (ball.vy > 0)) {
+    //     if(ball.x > this.xpos - 4 && ball.x < this.xpos +
+    //       boardWidth + 4) {
+    //         if (ball.y < this.ypos) {
+    //           ball.vy = -12;
+    //       }
+    //     }
+    //   }
+    // }
+
+    const xposMax = canvas.width - boardWidth;
+
+    function Cloud(y, x) {
       this.ypos = ystart - y;
-      this.xpos = xstart + x;
-      ctx.beginPath();
-      ctx.rect(this.xpos, this.ypos, boardWidth, boardHeight);
-      ctx.fillStyle = "#0095DD";
-      ctx.fill();
-      ctx.closePath();
-      if (ball.y > this.ypos - 15 && (ball.vy > 0)) {
-        if(ball.x > this.xpos - 4 && ball.x < this.xpos +
-          boardWidth + 4) {
-            if (ball.y < this.ypos) {
-              ball.vy = -12;
-          }
-        }
-      }
+      this.xpos = x;
+      ctx.drawImage(cloud, this.xpos, this.ypos);
     }
+
+
+    cloudsArray.map(cloudCoord => {
+      return new Cloud(2000 * cloudCoord[0] + 200, xposMax * cloudCoord[1]);
+    });
 
     function Board(y, x) {
       this.ypos = ystart - y;
-      this.xpos = xstart + x;
-      ctx.beginPath();
-      ctx.rect(this.xpos, this.ypos, boardWidth, boardHeight);
-      ctx.fillStyle = "#0095DD";
-      ctx.fill();
-      ctx.closePath();
+      this.xpos = x;
+      // ctx.beginPath();
+      // ctx.rect(this.xpos, this.ypos, boardWidth, boardHeight);
+      // ctx.fillStyle = "#0095DD";
+      // ctx.fill();
+      // ctx.closePath();
+      ctx.drawImage(board, this.xpos, this.ypos);
+      ctx.drawImage(eves, this.xpos + 0.5, this.ypos + 6);
       if (ball.y > this.ypos - 15 && (ball.vy > 0)) {
         if(ball.x > this.xpos - 4 && ball.x < this.xpos +
           boardWidth + 4) {
@@ -146,21 +177,26 @@ function draw(beginningBoards) {
       }
     }
 
-    const xposMax = canvas.width - boardWidth;
+
     beginningBoards.map(coord => {
       return new Board(coord[0], xposMax * coord[1]);
     });
+
+    ctx.drawImage(bounceBall, ball.x - 18, ball.y - 15);
+    ctx.drawImage(walleFloat, ball.x - 25, ball.y - 54);
+
+
     if (ball.y < 200) {
       beginningBoards.forEach(board => {
         board[0] += ball.vy;
-        if (board[0] < 0) {
+        if (board[0] < -20) {
           beginningBoards.pop();
         }
       });
       ball.y -= ball.vy;
     }
 
-    if (ball.y > canvas.height + 40) {
+    if (ball.y > canvas.height + 80) {
       endGame();
     }
 
