@@ -149,8 +149,8 @@ function draw() {
 
     function drawScore() {
       ctx.font = "16px Arial";
-      ctx.fillStyle = "#0095DD";
-      ctx.fillText("Score: "+score, 8, 20);
+      ctx.fillStyle = "#000000";
+      ctx.fillText("Score: "+ score, 8, 20);
     }
 
     cloudsArray.map(cloud => {
@@ -161,7 +161,7 @@ function draw() {
       return new Board(coord[0], xposMax * coord[1]);
     });
 
-    // ctx.drawScore();
+    drawScore();
     ctx.drawImage(bounceBall, ball.x - 18, ball.y - 15);
     ctx.drawImage(walleFloat, ball.x - 25, ball.y - 54);
 
@@ -176,6 +176,7 @@ function draw() {
         cloud[0] += ball.vy;
       });
       ball.y -= ball.vy;
+      score += 1;
     }
 
     if (ball.y > canvas.height + 80) {
