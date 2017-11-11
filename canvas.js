@@ -50,15 +50,16 @@ const cloud4 = new Image();
   cloud4.src = './images/cloud4.png';
 const cloud5 = new Image();
   cloud5.src = './images/cloud5.png';
-const cloudImages = [cloud1, cloud2, cloud3, cloud4, cloud5];
+const cloudImages = [cloud1, cloud2, cloud3, cloud4];
 const cloudsArray = [];
 for (let i = 0; i < 20; i++) {
   cloudsArray.push([
     Math.random() * 2000 + 200,
     Math.random(),
-    cloudImages[Math.floor(Math.random() * 5)]
+    cloudImages[Math.floor(Math.random() * 4)]
   ]);
 }
+let score = 0;
 
 // THE INVOKED FUNCTION ***
 draw();
@@ -120,7 +121,6 @@ function draw() {
     const boardHeight = 1;
     const boardWidth = 50;
     const ystart = canvas.height - boardHeight;
-
     const xposMax = canvas.width - boardWidth;
 
     function Cloud(y, x, cloudType) {
@@ -135,15 +135,22 @@ function draw() {
       this.xpos = x;
       ctx.drawImage(board, this.xpos, this.ypos);
       ctx.drawImage(eves, this.xpos + 0.5, this.ypos + 6);
-      if (ball.y > this.ypos - 15 && (ball.vy > 0)) {
+      // collision for ball bounce on boards
+      if (ball.y > this.ypos - 23 && (ball.vy > 0)) {
         if(ball.x > this.xpos - 4 && ball.x < this.xpos +
           boardWidth + 4) {
-            if (ball.y < this.ypos) {
+            if (ball.y < this.ypos - 10) {
               ball.vy = -12;
               ball.gameOff = false;
           }
         }
       }
+    }
+
+    function drawScore() {
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "#0095DD";
+      ctx.fillText("Score: "+score, 8, 20);
     }
 
     cloudsArray.map(cloud => {
@@ -154,9 +161,9 @@ function draw() {
       return new Board(coord[0], xposMax * coord[1]);
     });
 
+    // ctx.drawScore();
     ctx.drawImage(bounceBall, ball.x - 18, ball.y - 15);
     ctx.drawImage(walleFloat, ball.x - 25, ball.y - 54);
-
 
     if (ball.y < 200) {
       beginningBoards.forEach(board => {
@@ -189,9 +196,11 @@ function draw() {
   function moveBall(e) {
     switch (e.keyCode) {
       case (37):
+        e.preventDefault();
         ball.vx -= 4;
         break;
       case (39):
+        e.preventDefault();
         ball.vx += 4;
         break;
       case (32):
@@ -216,6 +225,3 @@ function draw() {
     }
    });
 }
-
-  //  canvas.addEventListener('mouseover', function(e) {
-  //  }); 'mouseout' also a listener
