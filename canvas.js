@@ -1,38 +1,43 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+const boardHeight = 1;
+const boardWidth = 50;
+const xposMax = canvas.width - boardWidth;
+let score = 0;
 
 const groundCoord = [canvas.height - 135, 0];
 
-const beginningBoards = [
-  [2120, Math.random()],
-  [2000, Math.random()],
-  [1880, Math.random()],
-  [1750, Math.random()],
-  [1630, Math.random()],
-  [1540, Math.random()],
-  [1440, Math.random()],
-  [1320, Math.random()],
-  [1200, Math.random()],
-  [1150, Math.random()],
-  [1080, Math.random()],
-  [1000, Math.random()],
-  [920, Math.random()],
-  [880, Math.random()],
-  [850, Math.random()],
-  [800, Math.random()],
-  [720, Math.random()],
-  [650, Math.random()],
-  [600, Math.random()],
-  [580, Math.random()],
-  [550, Math.random()],
-  [500, Math.random()],
-  [415, Math.random()],
-  [370, Math.random()],
-  [300, Math.random()],
-  [250, Math.random()],
-  [150, Math.random()],
-  [80, 0.5],
-];
+const boards = [];
+
+let hardNextBoardPos = 6000;
+while (hardNextBoardPos > 4000) {
+  let gap = Math.random() * 250;
+  let ypos = hardNextBoardPos - gap;
+  let xpos = Math.random() * xposMax;
+  boards.push([ypos, xpos]);
+  hardNextBoardPos -= gap;
+}
+
+let midNextBoardPos = 4000;
+while (midNextBoardPos > 2000) {
+  let gap = Math.random() * 175;
+  let ypos = midNextBoardPos - gap;
+  let xpos = Math.random() * xposMax;
+  boards.push([ypos, xpos]);
+  midNextBoardPos -= gap;
+}
+
+let easyNextBoardPos = 2000;
+while (easyNextBoardPos > 330) {
+  let gap = Math.random() * 100;
+  let ypos = easyNextBoardPos - gap;
+  let xpos = Math.random() * xposMax;
+  boards.push([ypos, xpos]);
+  easyNextBoardPos -= gap;
+}
+boards.push([230, 0.5 * xposMax]);
+
+
 
 const walleFloat = new Image();
   walleFloat.src = './images/walle_float.png';
@@ -63,7 +68,8 @@ for (let i = 0; i < 20; i++) {
     cloudImages[Math.floor(Math.random() * 4)]
   ]);
 }
-let score = 0;
+
+
 
 // THE INVOKED FUNCTION ***
 draw();
@@ -121,10 +127,8 @@ function draw() {
 
     raf = window.requestAnimationFrame(redraw);
 
-    const boardHeight = 1;
-    const boardWidth = 50;
+
     const ystart = canvas.height - boardHeight;
-    const xposMax = canvas.width - boardWidth;
 
     function Cloud(y, x, cloudType) {
       this.ypos = ystart - y;
@@ -160,8 +164,8 @@ function draw() {
       return new Cloud(cloud[0], xposMax * cloud[1], cloud[2]);
     });
 
-    beginningBoards.map(coord => {
-      return new Board(coord[0] + 150, xposMax * coord[1]);
+    boards.map(coord => {
+      return new Board(coord[0], coord[1]);
     });
 
     drawScore();
@@ -170,10 +174,10 @@ function draw() {
     ctx.drawImage(walleFloat, ball.x - 25, ball.y - 54);
 
     if (ball.y < 200) {
-      beginningBoards.forEach(board => {
+      boards.forEach(board => {
         board[0] += ball.vy;
         if (board[0] < -50) {
-          beginningBoards.pop();
+          boards.pop();
         }
       });
       cloudsArray.forEach(cloud => {
