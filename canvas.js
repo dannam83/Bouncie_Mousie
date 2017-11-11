@@ -1,6 +1,8 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
+const groundCoord = [canvas.height - 135, 0];
+
 const beginningBoards = [
   [2120, Math.random()],
   [2000, Math.random()],
@@ -40,6 +42,8 @@ const board = new Image();
   board.src = './images/board.png';
 const bounceBall = new Image();
   bounceBall.src = './images/ball.png';
+const junkyard = new Image();
+  junkyard.src = './images/junkyard.png';
 const cloud1 = new Image();
   cloud1.src = './images/cloud1.png';
 const cloud2 = new Image();
@@ -69,7 +73,7 @@ function draw() {
   let raf;
   const gravity = 0.14;
   const ball = {
-    x: 200,
+    x: 300,
     y: 460,
     vx: 0,
     vy: 12,
@@ -92,10 +96,9 @@ function draw() {
     ball.draw();
     ball.vy += 0.14;
     ball.move = true;
-
    // ball bounces off bottom of canvas
     if (ball.gameOff) {
-      if (ball.y + ball.vy > canvas.height) {
+      if (ball.y + ball.vy > canvas.height - 35) {
         ball.vy = -ball.vy;
       }
     }
@@ -148,7 +151,7 @@ function draw() {
     }
 
     function drawScore() {
-      ctx.font = "16px Arial";
+      ctx.font = "16px Verdana";
       ctx.fillStyle = "#000000";
       ctx.fillText("Score: "+ score, 8, 20);
     }
@@ -158,10 +161,11 @@ function draw() {
     });
 
     beginningBoards.map(coord => {
-      return new Board(coord[0], xposMax * coord[1]);
+      return new Board(coord[0] + 150, xposMax * coord[1]);
     });
 
     drawScore();
+    ctx.drawImage(junkyard, groundCoord[1], groundCoord[0]);
     ctx.drawImage(bounceBall, ball.x - 18, ball.y - 15);
     ctx.drawImage(walleFloat, ball.x - 25, ball.y - 54);
 
@@ -176,6 +180,7 @@ function draw() {
         cloud[0] += ball.vy;
       });
       ball.y -= ball.vy;
+      groundCoord[0] -= ball.vy;
       score += 1;
     }
 
