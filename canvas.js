@@ -2,10 +2,38 @@ let score = 0;
 let gameStart = false;
 let musicOn = true;
 let soundfxOn = true;
-let counter = 1;
+let pauseOff = true;
+let boards = [];
+let cloudsArray = [];
+
+const walleFloat = new Image();
+  walleFloat.src = './images/walle_float.png';
+const eves = new Image();
+  eves.src = './images/eves.png';
+const board = new Image();
+  board.src = './images/board.png';
+const bounceBall = new Image();
+  bounceBall.src = './images/ball.png';
+const junkyard = new Image();
+  junkyard.src = './images/junkyard.png';
+const cloud1 = new Image();
+  cloud1.src = './images/cloud1.png';
+const cloud2 = new Image();
+  cloud2.src = './images/cloud2.png';
+const cloud3 = new Image();
+  cloud3.src = './images/cloud3.png';
+const cloud4 = new Image();
+  cloud4.src = './images/cloud4.png';
+const cloud5 = new Image();
+  cloud5.src = './images/cloud5.png';
+const cloudImages = [cloud1, cloud2, cloud3, cloud4];
 
 function coverOff() {
   document.getElementById("cover").style.visibility="hidden";
+}
+
+function coverOn() {
+  document.getElementById("cover").style.visibility="visible";
 }
 
 const introAudio = document.createElement("audio");
@@ -39,6 +67,29 @@ function playBounce() {
   }
 }
 
+function soundControl(e) {
+  switch (e.keyCode) {
+    case (77):
+      e.preventDefault();
+      if (musicOn) {
+        musicOn = false;
+        musicPause();
+      } else {
+        musicOn = true;
+        musicPlay();
+      } break;
+    case (70):
+      e.preventDefault();
+      if (soundfxOn) {
+        soundfxOn = false;
+      } else {
+        soundfxOn = true;
+      } break;
+    default:
+      return null;
+  }
+}
+
 function start() {
   coverOff();
   gameStart = true;
@@ -46,6 +97,7 @@ function start() {
   musicPlay();
 }
 
+window.addEventListener("keydown", soundControl);
 document.addEventListener('DOMContentLoaded', go);
 
 function go() {
@@ -56,7 +108,6 @@ function go() {
   const xposMax = canvas.width - boardWidth;
 
   let groundCoord = [canvas.height - 135, 0];
-  let boards = [];
 
   function fillBoards() {
     let gap = 0;
@@ -78,47 +129,24 @@ function go() {
     }
     boards.push([230, 0.5 * xposMax]);
   }
-  fillBoards(6000, 100, 175, 250);
 
-  const walleFloat = new Image();
-    walleFloat.src = './images/walle_float.png';
-  const eves = new Image();
-    eves.src = './images/eves.png';
-  const board = new Image();
-    board.src = './images/board.png';
-  const bounceBall = new Image();
-    bounceBall.src = './images/ball.png';
-  const junkyard = new Image();
-    junkyard.src = './images/junkyard.png';
-  const cloud1 = new Image();
-    cloud1.src = './images/cloud1.png';
-  const cloud2 = new Image();
-    cloud2.src = './images/cloud2.png';
-  const cloud3 = new Image();
-    cloud3.src = './images/cloud3.png';
-  const cloud4 = new Image();
-    cloud4.src = './images/cloud4.png';
-  const cloud5 = new Image();
-    cloud5.src = './images/cloud5.png';
-  const cloudImages = [cloud1, cloud2, cloud3, cloud4];
-  const cloudsArray = [];
-  for (let i = 0; i < 20; i++) {
-    cloudsArray.push([
-      Math.random() * 2000 + 200,
-      Math.random(),
-      cloudImages[Math.floor(Math.random() * 4)]
-    ]);
+  function fillClouds() {
+    for (let i = 0; i < 50; i++) {
+      let ypos = Math.random() * 6000 + 200;
+      let xpos = Math.random() * xposMax;
+      let cloudType = cloudImages[Math.floor(Math.random() * 4)];
+      cloudsArray.push([ypos, xpos, cloudType]);
+    }
   }
 
-  // THE INVOKED FUNCTION ***
-  let ball = {};
+  fillBoards();
+  fillClouds();
   draw();
-  // ************************
 
   function draw() {
     let raf;
     const gravity = 0.14;
-    ball = {
+    let ball = {
       x: 300,
       y: 460,
       vx: 0,
@@ -206,7 +234,7 @@ function go() {
       }
 
       cloudsArray.map(cloud => {
-        return new Cloud(cloud[0], xposMax * cloud[1], cloud[2]);
+        return new Cloud(cloud[0], cloud[1], cloud[2]);
       });
 
       boards.map(coord => {
@@ -245,61 +273,67 @@ function go() {
     // REDRAW ENDS HERE
 
     raf = window.requestAnimationFrame(redraw);
+    window.addEventListener("keydown", pauseControl);
     window.addEventListener("keydown", moveBall);
+    window.addEventListener("keydown", gameControl);
 
     function moveBall(e) {
       switch (e.keyCode) {
         case (37):
           e.preventDefault();
-          ball.vx -= 4 / counter;
+          ball.vx -= 4;
           break;
         case (39):
           e.preventDefault();
-          ball.vx += 4 / counter;
+          ball.vx += 4;
           break;
+        default:
+          return null;
+        }
+      }
+
+    function pauseControl(e) {
+      switch (e.keyCode) {
         case (32):
           e.preventDefault();
-          if (ball.move) {
-            ball.move = false;
+          if (pauseOff) {
             window.cancelAnimationFrame(raf);
+            coverOn();
             musicPause();
-          } else if (ball.move === false) {
-            ball.move = true;
+            pauseOff = false;
+          } else {
             window.requestAnimationFrame(redraw);
+            coverOff();
+            pauseOff = true;
             if (musicOn) {
               musicPlay();
             }
           } break;
-        case (77):
-          e.preventDefault();
-          if (musicOn) {
-            musicPause();
-            musicOn = false;
-          } else {
-            musicPlay();
-            musicOn = true;
-          } break;
-        case (70):
-          e.preventDefault();
-          if (soundfxOn) {
-            soundfxOn = false;
-          } else {
-            soundfxOn = true;
-          } break;
+        default:
+          return null;
+      }
+    }
+
+    function gameControl(e) {
+      switch (e.keyCode) {
         case (13):
           e.preventDefault();
           if (gameStart === false) {
             start();
           } else if (ball.y > canvas.height + 80) {
-            location.reload();
-            // counter += 1;
-            // score = 0;
-            // ball = {};
-            // window.cancelAnimationFrame(redraw);
-            // groundCoord = [canvas.height - 135, 0];
-            // boards = [];
-            // fillBoards();
-            // draw();
+            window.cancelAnimationFrame(raf);
+            score = 0;
+            groundCoord = [canvas.height - 135, 0];
+            boards = [];
+            fillBoards();
+            cloudsArray = [];
+            fillClouds();
+            ball.x = 300;
+            ball.y = 460;
+            ball.vx = 0;
+            ball.vy = 12;
+            ball.gameOff = true;
+            raf = window.requestAnimationFrame(redraw);
           } break;
         default:
           return null;
