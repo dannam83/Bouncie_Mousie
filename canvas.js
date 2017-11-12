@@ -8,13 +8,6 @@ function coverOff() {
   document.getElementById("cover").style.visibility="hidden";
 }
 
-function start() {
-  coverOff();
-  gameStart = true;
-  introAudio.pause();
-  musicPlay();
-}
-
 const introAudio = document.createElement("audio");
 introAudio.src = "./sounds/define_dancing.mp4";
 introAudio.loop = true;
@@ -28,7 +21,7 @@ const bounceAudio = document.createElement("audio");
 bounceAudio.src = "./sounds/bounce2.mp3";
 
 function musicPlay() {
-  if (score === 0 && musicOn) {
+  if (gameStart === false  && musicOn) {
     introAudio.play();
   } else if (musicOn) {
     gameAudio.play();
@@ -46,6 +39,13 @@ function playBounce() {
   }
 }
 
+function start() {
+  coverOff();
+  gameStart = true;
+  introAudio.pause();
+  musicPlay();
+}
+
 document.addEventListener('DOMContentLoaded', go);
 
 function go() {
@@ -58,33 +58,27 @@ function go() {
   let groundCoord = [canvas.height - 135, 0];
   let boards = [];
 
-  let hardNextBoardPos = 6000;
-  while (hardNextBoardPos > 4000) {
-    let gap = Math.random() * 250;
-    let ypos = hardNextBoardPos - gap;
-    let xpos = Math.random() * xposMax;
-    boards.push([ypos, xpos]);
-    hardNextBoardPos -= gap;
+  function fillBoards() {
+    let gap = 0;
+    let ypos = 6000;
+    let xpos;
+    while (ypos > 230) {
+      xpos = Math.random() * xposMax;
+      boards.push([ypos, xpos]);
+      if (ypos > 4000) {
+        gap = Math.random() * 250;
+        ypos -= gap;
+      } else if (ypos > 2000) {
+        gap = Math.random() * 175;
+        ypos -= gap;
+      } else if (ypos > 230) {
+        gap = Math.random() * 100;
+        ypos -= gap;
+      }
+    }
+    boards.push([230, 0.5 * xposMax]);
   }
-
-  let midNextBoardPos = 4000;
-  while (midNextBoardPos > 2000) {
-    let gap = Math.random() * 175;
-    let ypos = midNextBoardPos - gap;
-    let xpos = Math.random() * xposMax;
-    boards.push([ypos, xpos]);
-    midNextBoardPos -= gap;
-  }
-
-  let easyNextBoardPos = 2000;
-  while (easyNextBoardPos > 330) {
-    let gap = Math.random() * 100;
-    let ypos = easyNextBoardPos - gap;
-    let xpos = Math.random() * xposMax;
-    boards.push([ypos, xpos]);
-    easyNextBoardPos -= gap;
-  }
-  boards.push([230, 0.5 * xposMax]);
+  fillBoards(6000, 100, 175, 250);
 
   const walleFloat = new Image();
     walleFloat.src = './images/walle_float.png';
@@ -294,46 +288,18 @@ function go() {
           } break;
         case (13):
           e.preventDefault();
-          // debugger
           if (gameStart === false) {
             start();
           } else if (ball.y > canvas.height + 80) {
-            counter += 1;
-            score = 0;
-            ball.vx = 0;
-            ball = {};
-            window.cancelAnimationFrame(redraw);
-            raf = null;
-            groundCoord = [canvas.height - 135, 0];
-            boards = [];
-            hardNextBoardPos = 6000;
-            while (hardNextBoardPos > 4000) {
-              let gap = Math.random() * 250;
-              let ypos = hardNextBoardPos - gap;
-              let xpos = Math.random() * xposMax;
-              boards.push([ypos, xpos]);
-              hardNextBoardPos -= gap;
-            }
-
-            midNextBoardPos = 4000;
-            while (midNextBoardPos > 2000) {
-              let gap = Math.random() * 175;
-              let ypos = midNextBoardPos - gap;
-              let xpos = Math.random() * xposMax;
-              boards.push([ypos, xpos]);
-              midNextBoardPos -= gap;
-            }
-
-            easyNextBoardPos = 2000;
-            while (easyNextBoardPos > 330) {
-              let gap = Math.random() * 100;
-              let ypos = easyNextBoardPos - gap;
-              let xpos = Math.random() * xposMax;
-              boards.push([ypos, xpos]);
-              easyNextBoardPos -= gap;
-            }
-            boards.push([230, 0.5 * xposMax]);
-            draw();
+            location.reload();
+            // counter += 1;
+            // score = 0;
+            // ball = {};
+            // window.cancelAnimationFrame(redraw);
+            // groundCoord = [canvas.height - 135, 0];
+            // boards = [];
+            // fillBoards();
+            // draw();
           } break;
         default:
           return null;
