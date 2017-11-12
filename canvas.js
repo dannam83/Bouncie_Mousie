@@ -228,7 +228,7 @@ function go() {
       }
 
       function drawScore() {
-        ctx.font = "16px Verdana";
+        ctx.font = "16px Aldrich";
         ctx.fillStyle = "#000000";
         ctx.fillText("Score: "+ score, 8, 20);
       }

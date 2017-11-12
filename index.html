@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>Wall-E Ball</title>
+    <link href="https://fonts.googleapis.com/css?family=Aldrich|Jockey+One" rel="stylesheet">
+    <!-- font-family: 'Aldrich', sans-serif;
+    font-family: 'Jockey One', sans-serif; -->
     <style media="screen">
       html, body, canvas {
         margin: 0;
@@ -27,8 +30,11 @@
         min-width: 1000px;
       }
       .gameboard-div {
+        min-width: 1000px;
         position: absolute;
-        padding-right: 400px;
+        padding-right: 87px;
+        display: flex;
+        justify-content: center;
       }
       .background {
         width: 100%;
@@ -44,10 +50,28 @@
       }
       .canvas-cover {
         background-color: black;
-        opacity: 0.5;
+        opacity: 0.75;
         height: 505px;
         width: 405px;
-        margin-bottom: 3px;
+      }
+      .buttons-div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding-left: 15px;
+      }
+      .button {
+        margin-left: 20px;
+      }
+      .controls {
+        padding: 10px 0px 10px 20px;
+        color: white;
+        font-family: 'Aldrich', sans-serif;
+        line-height: 22px;
+        background: black;
+        background: rgba(0, 0, 0, 0.4);
+        width: 275px;
+        border-radius: 3px;
       }
     </style>
   </head>
@@ -57,10 +81,24 @@
 
     <div class="master-div">
       <img src="images/walle_gaze.jpg" class="background">
-       <button type="button" name="button" onclick="start()">clickkkkkkkkkkkkkkk</button>
       <div class="gameboard-div">
-        <canvas id="canvas" width="400" height="500">
-        </canvas>
+        <canvas id="canvas" width="400" height="500"></canvas>
+        <div class="buttons-div">
+          <div class="buttons1">
+            <div class="controls">
+              left / right arrow = move Wall-E <br>
+              spacebar = pause <br>
+              m = music on/off <br>
+              f = sound fx on/off
+            </div>
+          </div>
+          <div class="buttons2">
+            <button class="button" onclick="start()">Pause</button>
+            <button class="button" onclick="start()">Music</button>
+            <button class="button" onclick="start()">Sound FX</button>
+            <button class="button" onclick="start()">clickk</button>
+          </div>
+        </div>
       </div>
       <div class="canvas-cover-div" id="cover">
         <div class="canvas-cover"></div>
