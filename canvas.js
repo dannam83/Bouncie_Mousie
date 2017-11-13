@@ -185,7 +185,7 @@ function go() {
 
   function fillClouds() {
     for (let i = 0; i < 50; i++) {
-      let ypos = Math.random() * 6000 + 200;
+      let ypos = Math.random() * 10000 + 350;
       let xpos = Math.random() * xposMax;
       let cloudType = cloudImages[Math.floor(Math.random() * 4)];
       cloudsArray.push([ypos, xpos, cloudType]);
