@@ -369,32 +369,18 @@ function go() {
       switch (e.keyCode) {
         case (32):
           e.preventDefault();
-          if (pauseOff) {
+          if (gameOver || gameStart === false) {
+            return null;
+          } else if (pauseOff) {
             window.cancelAnimationFrame(raf);
-            if (gameStart === false) {
-              messageStartOff();
-            }
-            if (gameOver === false) {
-              messageRetryOff();
-              messageWinOff();
-            }
             messageUnpauseOn();
             coverOn();
-            musicPause();
             pauseOff = false;
+            musicPause();
           } else {
-            if (gameOver === false) {
-              window.requestAnimationFrame(redraw);
-            } else if (gameOver) {
-              messageRetryOn();
-            }
-            if (gameStart === false) {
-              messageStartOn();
-            }
+            window.requestAnimationFrame(redraw);
             messageUnpauseOff();
-            if (gameStart && gameOver===false) {
-              coverOff();
-            }
+            coverOff();
             pauseOff = true;
             if (musicOn) {
               musicPlay();
