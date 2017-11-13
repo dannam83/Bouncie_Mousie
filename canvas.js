@@ -1,8 +1,10 @@
 let score = 0;
 let gameStart = false;
+let gameOver = false;
 let musicOn = true;
 let soundfxOn = true;
 let pauseOff = true;
+let storyOn = true;
 let boards = [];
 let cloudsArray = [];
 
@@ -16,6 +18,8 @@ const bounceBall = new Image();
   bounceBall.src = './images/ball.png';
 const junkyard = new Image();
   junkyard.src = './images/junkyard.png';
+const spaceship = new Image();
+  spaceship.src = './images/spaceship.png';
 const cloud1 = new Image();
   cloud1.src = './images/cloud1.png';
 const cloud2 = new Image();
@@ -31,9 +35,41 @@ const cloudImages = [cloud1, cloud2, cloud3, cloud4];
 function coverOff() {
   document.getElementById("cover").style.visibility="hidden";
 }
-
 function coverOn() {
   document.getElementById("cover").style.visibility="visible";
+}
+function messageUnpauseOff() {
+  document.getElementById("message-unpause").style.visibility="hidden";
+}
+function messageUnpauseOn() {
+  document.getElementById("message-unpause").style.visibility="visible";
+}
+function messageStartOff() {
+  document.getElementById("message-start").style.visibility="hidden";
+}
+function messageStartOn() {
+  document.getElementById("message-start").style.visibility="visible";
+}
+function messageRetryOff() {
+  document.getElementById("message-retry").style.visibility="hidden";
+}
+function messageRetryOn() {
+  document.getElementById("message-retry").style.visibility="visible";
+}
+function messageWinOff() {
+  document.getElementById("message-win").style.visibility="hidden";
+}
+function messageWinOn() {
+  document.getElementById("message-win").style.visibility="visible";
+}
+function storyToggle() {
+  if (storyOn) {
+    document.getElementById("wall-e-story").style.visibility="hidden";
+    storyOn = false;
+  } else {
+    document.getElementById("wall-e-story").style.visibility="visible";
+    storyOn = true;
+  }
 }
 
 const introAudio = document.createElement("audio");
@@ -46,7 +82,20 @@ gameAudio.src = "./sounds/wall_e.mp3";
 gameAudio.loop = true;
 
 const bounceAudio = document.createElement("audio");
-bounceAudio.src = "./sounds/bounce2.mp3";
+bounceAudio.src = "./sounds/bounce.mp3";
+const bounceAudioPlay = () => {
+  if (soundfxOn) {
+    bounceAudio.play();
+  }
+};
+
+const loseAudio = document.createElement("audio");
+loseAudio.src = "./sounds/lose.mp3";
+const loseAudioPlay = () => {
+  if (soundfxOn) {
+    loseAudio.play();
+  }
+};
 
 function musicPlay() {
   if (gameStart === false  && musicOn) {
@@ -59,12 +108,6 @@ function musicPlay() {
 function musicPause() {
   introAudio.pause();
   gameAudio.pause();
-}
-
-function playBounce() {
-  if (soundfxOn) {
-    bounceAudio.play();
-  }
 }
 
 function soundControl(e) {
@@ -91,7 +134,10 @@ function soundControl(e) {
 }
 
 function start() {
-  coverOff();
+  if (pauseOff) {
+    coverOff();
+  }
+  messageStartOff();
   gameStart = true;
   introAudio.pause();
   musicPlay();
@@ -107,20 +153,27 @@ function go() {
   const boardWidth = 50;
   const xposMax = canvas.width - boardWidth;
 
+// last = 10200
+  const lastBoardY = 10000;
+  let topCoord = [lastBoardY + 400, -48];
   let groundCoord = [canvas.height - 135, 0];
 
   function fillBoards() {
     let gap = 0;
-    let ypos = 6000;
+    let ypos = lastBoardY - 200;
     let xpos;
+    boards.push([lastBoardY, 0.5 * xposMax]);
     while (ypos > 230) {
       xpos = Math.random() * xposMax;
       boards.push([ypos, xpos]);
-      if (ypos > 4000) {
+      if (ypos > 7500) {
         gap = Math.random() * 250;
         ypos -= gap;
-      } else if (ypos > 2000) {
-        gap = Math.random() * 175;
+      } else if (ypos > 5000) {
+        gap = Math.random() * 200;
+        ypos -= gap;
+      } else if (ypos > 2500) {
+        gap = Math.random() * 150;
         ypos -= gap;
       } else if (ypos > 230) {
         gap = Math.random() * 100;
@@ -139,6 +192,10 @@ function go() {
     }
   }
 
+  storyToggle();
+  messageWinOff();
+  messageRetryOff();
+  messageUnpauseOff();
   fillBoards();
   fillClouds();
   draw();
@@ -175,7 +232,7 @@ function go() {
         if (ball.y + ball.vy > canvas.height - 35) {
           ball.vy = -ball.vy;
           if (gameStart) {
-            playBounce();
+            bounceAudioPlay();
           }
         }
       }
@@ -220,7 +277,7 @@ function go() {
               if (ball.y < this.ypos - 10) {
                 ball.vy = -12;
                 ball.gameOff = false;
-                playBounce();
+                bounceAudioPlay();
               }
             }
           }
@@ -241,10 +298,11 @@ function go() {
         return new Board(coord[0], coord[1]);
       });
 
-      drawScore();
       ctx.drawImage(junkyard, groundCoord[1], groundCoord[0]);
       ctx.drawImage(bounceBall, ball.x - 18, ball.y - 15);
       ctx.drawImage(walleFloat, ball.x - 25, ball.y - 54);
+      ctx.drawImage(spaceship, topCoord[1], ystart - topCoord[0]);
+      drawScore();
 
       if (ball.y < 200) {
         boards.forEach(board => {
@@ -258,16 +316,31 @@ function go() {
         });
         ball.y -= ball.vy;
         groundCoord[0] -= ball.vy;
+        topCoord[0] += ball.vy;
         score += 1;
       }
 
+      if (ball.y > canvas.height) {
+        loseAudioPlay();
+      }
       if (ball.y > canvas.height + 80) {
         endGame();
+      }
+      if (ball.y > topCoord[0] - 300 ) {
+        winGame();
       }
 
       function endGame() {
         window.cancelAnimationFrame(raf);
-        alert("GAME OVER");
+        gameOver = true;
+        messageRetryOn();
+        coverOn();
+      }
+      function winGame() {
+        window.cancelAnimationFrame(raf);
+        gameOver = true;
+        messageWinOn();
+        coverOn();
       }
     }
     // REDRAW ENDS HERE
@@ -298,12 +371,30 @@ function go() {
           e.preventDefault();
           if (pauseOff) {
             window.cancelAnimationFrame(raf);
+            if (gameStart === false) {
+              messageStartOff();
+            }
+            if (gameOver === false) {
+              messageRetryOff();
+              messageWinOff();
+            }
+            messageUnpauseOn();
             coverOn();
             musicPause();
             pauseOff = false;
           } else {
-            window.requestAnimationFrame(redraw);
-            coverOff();
+            if (gameOver === false) {
+              window.requestAnimationFrame(redraw);
+            } else if (gameOver) {
+              messageRetryOn();
+            }
+            if (gameStart === false) {
+              messageStartOn();
+            }
+            messageUnpauseOff();
+            if (gameStart && gameOver===false) {
+              coverOff();
+            }
             pauseOff = true;
             if (musicOn) {
               musicPlay();
@@ -320,10 +411,11 @@ function go() {
           e.preventDefault();
           if (gameStart === false) {
             start();
-          } else if (ball.y > canvas.height + 80) {
-            window.cancelAnimationFrame(raf);
+          } else if (gameOver) {
+            gameOver = false;
             score = 0;
             groundCoord = [canvas.height - 135, 0];
+            topCoord = [lastBoardY + 400, -48];
             boards = [];
             fillBoards();
             cloudsArray = [];
@@ -333,6 +425,9 @@ function go() {
             ball.vx = 0;
             ball.vy = 12;
             ball.gameOff = true;
+            messageRetryOff();
+            messageWinOff();
+            coverOff();
             raf = window.requestAnimationFrame(redraw);
           } break;
         default:

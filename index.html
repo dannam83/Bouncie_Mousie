@@ -29,6 +29,20 @@
         div.controls {
           margin-right: 9px;
         }
+        div.title-div {
+          width: 825px;
+        }
+        span.name {
+          margin-left: 140px;
+        }
+        div.cover-message {
+          margin-top: 180px;
+          font-size: 21px;
+        }
+        div.wall-e-story-div {
+          margin-top: 340px;
+          margin-left: 246px;
+        }
       }
       .master-div {
         display: flex;
@@ -36,30 +50,39 @@
         min-width: 1280px;
       }
       .title-div {
+        width: 700px;
         position: absolute;
         font-family: 'Aldrich', sans-serif;
         color: white;
-        margin-top: 30px;
+        margin-top: 35px;
         display: flex;
-
+        justify-content: flex-end;
       }
       .title {
         font-size: 64px;
         font-weight: 700;
       }
+      .title:hover {
+        cursor: default;
+      }
       .name {
         display: flex;
         justify-content: flex-end;
-        margin-left: 50px;
-        padding-top: 20px;
+        margin-left: 95px;
+        padding-top: 35px;
+        color: white;
       }
+      .name-link:visited {
+        color: white;
+      }
+
       .gameboard-div {
         min-width: 1280px;
         position: absolute;
         padding-right: 50px;
         display: flex;
         justify-content: center;
-        margin-top: 92px;
+        margin-top: 95px;
       }
       .background {
         width: 100%;
@@ -78,6 +101,14 @@
         opacity: 0.75;
         width: 404px;
         height: 505px;
+        color: #B6B6B6;
+        display: flex;
+        justify-content: center;
+      }
+      .cover-message {
+        position: absolute;
+        font-family: 'Aldrich', sans-serif;
+        margin-top: 150px;
       }
       .buttons-div {
         display: flex;
@@ -103,16 +134,42 @@
         font-size: 20px;
         display: flex;
         justify-content: center;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.65);
         border: 1.3px solid white;
         padding-top: 10px;
         padding-bottom: 6px;
         padding-left: 0px;
         font-weight: 100px;
         width: 292px;
+        z-index: 1;
       }
+      #story:hover {
+        cursor: pointer;
+      }
+      .wall-e-story-div {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.8);
+        border: 1.3px solid white;
+        height: 200px;
+        width: 262px;
+        color: white;
+        font-family: 'Aldrich', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 220px;
+        margin-left: 191.5px;
+        border-radius: 3px;
+        line-height: 23px;
+        padding: 15px;
+        z-index: 1;
+      }
+      .wall-e-story-div:hover {
+        cursor: pointer;
+      }
+
       .about-div {
-        margin-top: 9.5px;
+        margin-top: 2px;
         margin-left: 20px;
         display: flex;
         flex-direction: column;
@@ -123,7 +180,6 @@
         cursor: pointer;
         z-index: 1;
       }
-
 
     </style>
   </head>
@@ -137,13 +193,34 @@
         <span class="title">
           Wall-E Ball
         </span>
+        <a href="http://dannam.xyz" class="name-link">
         <span class="name">
-          by Daniel Nam
+          Daniel Nam
         </span>
+        </a>
       </div>
       <div class="gameboard-div">
+        <div class="wall-e-story-div" id="wall-e-story" onclick="storyToggle()">
+          Eve is in trouble, and she needs Wall-E's help! Eve's friends
+          brought their spaceship, but it can't get near earth's surface.
+          Wall-E is going to have to use his ball and just keep bouncing
+          until he reaches it. Can you help him bounce his way up there?
+        </div>
         <div class="canvas-cover-div" id="cover">
-          <div class="canvas-cover"></div>
+          <div class="canvas-cover">
+            <div class="cover-message" id="message-start">
+              press "ENTER" to start
+            </div>
+            <div class="cover-message" id="message-unpause">
+              press "SPACEBAR" to unpause
+            </div>
+            <div class="cover-message" id="message-retry">
+              press "ENTER" to play again
+            </div>
+            <div class="cover-message" id="message-win">
+              YOU DID IT! press "ENTER" to play again
+            </div>
+          </div>
         </div>
         <canvas id="canvas" width="400" height="500"></canvas>
         <div class="buttons-div">
@@ -155,15 +232,15 @@
               f = sound fx on/off
             </div>
           </div>
-          <div class="controls" id="story">
-            Wall-E's Story
+          <div class="controls" id="story" onclick="storyToggle()">
+            Wall-E's Mission
           </div>
         </div>
         <div class="about-div">
-          <a href="https://www.linkedin.com/in/daniel-nam-4032a0b/" class="about">
-            <i class="fa fa-linkedin" aria-hidden="true"></i></a>
           <a href="http://github.com/dannam83" class="about">
             <i class="fa fa-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/daniel-nam-4032a0b/" class="about">
+            <i class="fa fa-linkedin" aria-hidden="true"></i></a>
           <a href="https://angel.co/daniel-nam-3?public_profile=1" class="about">
             <i class="fa fa-angellist" aria-hidden="true"></i></a>
           <a href="images/resume.pdf" class="about">
