@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Wall-E Ball</title>
     <link href="https://fonts.googleapis.com/css?family=Aldrich|Jockey+One" rel="stylesheet">
+    <script src="https://use.fontawesome.com/56fa3834bd.js"></script>
     <!-- font-family: 'Aldrich', sans-serif;
     font-family: 'Jockey One', sans-serif; -->
     <style media="screen">
@@ -12,29 +13,53 @@
         padding: 0;
       }
       @media screen and (min-width: 1281px) {
+        div.buttons-div {
+          padding-left: 0px;
+        }
+        div.canvas-cover {
+          width: 504px;
+          height: 630px;
+          margin-right: 26px;
+        }
         canvas {
           width: 500px;
           height: 625px;
-          margin-right: 50px;
+          margin-right: 33px;
         }
-        .canvas-cover {
-          width: 505px;
-          height: 630px;
-          margin-right: 50px;
+        div.controls {
+          margin-right: 9px;
         }
       }
       .master-div {
         display: flex;
         justify-content: center;
-        align-items: center;
-        min-width: 1000px;
+        min-width: 1280px;
+      }
+      .title-div {
+        position: absolute;
+        font-family: 'Aldrich', sans-serif;
+        color: white;
+        margin-top: 30px;
+        display: flex;
+
+      }
+      .title {
+        font-size: 64px;
+        font-weight: 700;
+      }
+      .name {
+        display: flex;
+        justify-content: flex-end;
+        margin-left: 50px;
+        padding-top: 20px;
       }
       .gameboard-div {
-        min-width: 1000px;
+        min-width: 1280px;
         position: absolute;
-        padding-right: 87px;
+        padding-right: 50px;
         display: flex;
         justify-content: center;
+        margin-top: 92px;
       }
       .background {
         width: 100%;
@@ -46,13 +71,13 @@
       }
       .canvas-cover-div {
         position: absolute;
-        padding-right: 400px;
+        padding-right: 347px;
       }
       .canvas-cover {
         background-color: black;
         opacity: 0.75;
+        width: 404px;
         height: 505px;
-        width: 405px;
       }
       .buttons-div {
         display: flex;
@@ -73,6 +98,33 @@
         width: 275px;
         border-radius: 3px;
       }
+      #story {
+        margin-bottom: 2px;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1.3px solid white;
+        padding-top: 10px;
+        padding-bottom: 6px;
+        padding-left: 0px;
+        font-weight: 100px;
+        width: 292px;
+      }
+      .about-div {
+        margin-top: 9.5px;
+        margin-left: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+      .about {
+        color: white;
+        margin-bottom: 11px;
+        cursor: pointer;
+        z-index: 1;
+      }
+
+
     </style>
   </head>
 
@@ -80,8 +132,19 @@
     <script type="text/javascript" src="canvas.js"></script>
 
     <div class="master-div">
-      <img src="images/walle_gaze.jpg" class="background">
+      <img src="images/walle_bg.jpg" class="background">
+      <div class="title-div">
+        <span class="title">
+          Wall-E Ball
+        </span>
+        <span class="name">
+          by Daniel Nam
+        </span>
+      </div>
       <div class="gameboard-div">
+        <div class="canvas-cover-div" id="cover">
+          <div class="canvas-cover"></div>
+        </div>
         <canvas id="canvas" width="400" height="500"></canvas>
         <div class="buttons-div">
           <div class="buttons1">
@@ -92,17 +155,24 @@
               f = sound fx on/off
             </div>
           </div>
-          <div class="buttons2">
-            <button class="button" onclick="start()">Pause</button>
-            <button class="button" onclick="start()">Music</button>
-            <button class="button" onclick="start()">Sound FX</button>
-            <button class="button" onclick="start()">clickk</button>
+          <div class="controls" id="story">
+            Wall-E's Story
           </div>
         </div>
+        <div class="about-div">
+          <a href="https://www.linkedin.com/in/daniel-nam-4032a0b/" class="about">
+            <i class="fa fa-linkedin" aria-hidden="true"></i></a>
+          <a href="http://github.com/dannam83" class="about">
+            <i class="fa fa-github" aria-hidden="true"></i></a>
+          <a href="https://angel.co/daniel-nam-3?public_profile=1" class="about">
+            <i class="fa fa-angellist" aria-hidden="true"></i></a>
+          <a href="images/resume.pdf" class="about">
+            <i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+          <a href="mailto:dannam83@gmail.com" class="about">
+            <i class="fa fa-envelope" aria-hidden="true"></i></a>
+        </div>
       </div>
-      <div class="canvas-cover-div" id="cover">
-        <div class="canvas-cover"></div>
-      </div>
+
 
     </div>
 
