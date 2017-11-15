@@ -5,11 +5,16 @@ let musicOn = true;
 let soundfxOn = true;
 let pauseOff = true;
 let storyOn = true;
+let walleRight = true;
+let walleCanGoFast = true;
+let resetScore = true;
 let boards = [];
 let cloudsArray = [];
 
 const walleFloat = new Image();
   walleFloat.src = './images/walle_float.png';
+const walleFloatLeft = new Image();
+  walleFloatLeft.src = './images/walle_float_left.png';
 const eves = new Image();
   eves.src = './images/eves.png';
 const board = new Image();
@@ -88,12 +93,26 @@ const bounceAudioPlay = () => {
     bounceAudio.play();
   }
 };
-
 const loseAudio = document.createElement("audio");
 loseAudio.src = "./sounds/lose.mp3";
 const loseAudioPlay = () => {
   if (soundfxOn) {
     loseAudio.play();
+  }
+};
+const walleFastAudio = document.createElement("audio");
+walleFastAudio.src = "./sounds/walle_fast.mp3";
+const walleFastAudioPlay = () => {
+  if (soundfxOn && walleCanGoFast) {
+    walleFastAudio.play();
+    walleCanGoFast = false;
+  }
+};
+const puffAudio = document.createElement("audio");
+puffAudio.src = "./sounds/puff.mp3";
+const puffPlay = () => {
+  if (soundfxOn) {
+    puffAudio.play();
   }
 };
 
@@ -104,7 +123,6 @@ function musicPlay() {
     gameAudio.play();
   }
 }
-
 function musicPause() {
   introAudio.pause();
   gameAudio.pause();
@@ -152,11 +170,9 @@ function go() {
   const boardHeight = 1;
   const boardWidth = 50;
   const xposMax = canvas.width - boardWidth;
-
-// last = 10200
   const lastBoardY = 10000;
-  let topCoord = [lastBoardY + 400, -48];
-  let groundCoord = [canvas.height - 135, 0];
+  const topCoord = [lastBoardY + 500, -48];
+  const groundCoord = [canvas.height - 135, 0];
 
   function fillBoards() {
     let gap = 0;
@@ -184,8 +200,8 @@ function go() {
   }
 
   function fillClouds() {
-    for (let i = 0; i < 50; i++) {
-      let ypos = Math.random() * 10000 + 350;
+    for (let i = 0; i < 150; i++) {
+      let ypos = Math.random() * 10000 + 300;
       let xpos = Math.random() * xposMax;
       let cloudType = cloudImages[Math.floor(Math.random() * 4)];
       cloudsArray.push([ypos, xpos, cloudType]);
@@ -208,7 +224,7 @@ function go() {
       y: 460,
       vx: 0,
       vy: 12,
-      radius: 15,
+      radius: 0,
       gameOff: true,
       color: 'red',
       draw: function() {
@@ -251,6 +267,7 @@ function go() {
         ball.vx -= 0.2;
       } else {
         ball.vx = 0;
+        walleCanGoFast = true;
       }
 
       raf = window.requestAnimationFrame(redraw);
@@ -298,11 +315,23 @@ function go() {
         return new Board(coord[0], coord[1]);
       });
 
+      function walle() {
+        if (walleRight) {
+          ctx.drawImage(walleFloat, ball.x - 25, ball.y - 54);
+        } else {
+          ctx.drawImage(walleFloatLeft, ball.x - 25, ball.y - 54);
+        }
+      }
+
       ctx.drawImage(junkyard, groundCoord[1], groundCoord[0]);
       ctx.drawImage(bounceBall, ball.x - 18, ball.y - 15);
-      ctx.drawImage(walleFloat, ball.x - 25, ball.y - 54);
+      walle();
       ctx.drawImage(spaceship, topCoord[1], ystart - topCoord[0]);
       drawScore();
+
+      if (ball.vx > 20 || ball.vx < -20) {
+        walleFastAudioPlay();
+      }
 
       if (ball.y < 200) {
         boards.forEach(board => {
@@ -339,6 +368,7 @@ function go() {
       function winGame() {
         window.cancelAnimationFrame(raf);
         gameOver = true;
+        resetScore = false;
         messageWinOn();
         coverOn();
       }
@@ -354,10 +384,14 @@ function go() {
       switch (e.keyCode) {
         case (37):
           e.preventDefault();
+          walleRight = false;
+          puffPlay();
           ball.vx -= 4;
           break;
         case (39):
           e.preventDefault();
+          walleRight = true;
+          puffPlay();
           ball.vx += 4;
           break;
         default:
@@ -399,9 +433,12 @@ function go() {
             start();
           } else if (gameOver) {
             gameOver = false;
-            score = 0;
-            groundCoord = [canvas.height - 135, 0];
-            topCoord = [lastBoardY + 400, -48];
+            if (resetScore) {
+              score = 0;
+            }
+            resetScore = true;
+            groundCoord[0] = canvas.height - 135;
+            topCoord[0] = lastBoardY + 400;
             boards = [];
             fillBoards();
             cloudsArray = [];
