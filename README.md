@@ -75,3 +75,6 @@ Add boards that move, boards that give a higher bounce, and boards that can sust
 
 #### Enemies
 Add enemies that would make Wall-E lose if he collides with them.
+
+## Legal
+Art and music assets used in this project are for educational purposes only. Art and Music assets are property of Disney.
